@@ -1,6 +1,20 @@
 import openpyxl
 from credit_api.models import Customer, Loan
 from background_task import background
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Customer, Loan
+from .serializers import CustomerSerializer, LoanSerializer
+from django.db.models import Sum
+from django.db.models import Max
+from .models import Customer
+from .serializers import CustomerSerializer
+import openpyxl
+from credit_api.models import Customer, Loan
+from background_task import background
+from django.utils.dateparse import parse_date
+from datetime import datetime
+
 
 @background(schedule=1)
 def ingest_customer_data():
@@ -27,11 +41,6 @@ def ingest_customer_data():
             approved_limit=row[6],
             current_debt=0  # Default to 0 or adjust based on your logic
         )
-import openpyxl
-from credit_api.models import Customer, Loan
-from background_task import background
-from django.utils.dateparse import parse_date
-from datetime import datetime
 
 @background(schedule=1)
 def ingest_loan_data():
@@ -79,20 +88,6 @@ def ingest_loan_data():
         except Exception as e:
             print(f"Error processing loan for Customer ID {row[0]}: {e}")
 
-
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .models import Customer, Loan
-from .serializers import CustomerSerializer, LoanSerializer
-from django.db.models import Sum
-import math
-import uuid
-
-
-
-from django.db.models import Max
-from .models import Customer
-from .serializers import CustomerSerializer
 
 @api_view(['POST'])
 def register_customer(request):
